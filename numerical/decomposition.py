@@ -18,21 +18,18 @@ def lu_decomposition(a):
         if a[i, i] == 0:
             raise ValueError('Matrix isn\'t LU decomposable.')
 
-    l, u, _ = _lu_decomposition(a, a.shape[0] - 1)
-    return l, u
+    return _lu_decomposition(a, a.shape[0] - 1)
 
 
 def _lu_decomposition(a0, k):
-    n = a0.shape[0]
+    """Recursive call of :lu_decomposition method.
 
-    _l, _u, ak_minus_1 = (np.identity(n), a0, a0) if k == 1 else _lu_decomposition(a0, k - 1)
+    :param a0: the matrix A (it's also the parameter :a in the :lu_decomposition).
+    :param k: which level of reduction is the algorithm dealing. Resolves recursion.
+    :return: L, U and the Ak matrix.
+    """
+    _l, ak_minus_1 = (np.identity(a0.shape[0]), a0) if k == 1 else _lu_decomposition(a0, k - 1)
 
-    t_dot_e_t = np.dot(tau(ak_minus_1[:, k - 1], k), e(k - 1, n).T)
+    t_dot_e_t = np.dot(tau(ak_minus_1[:, k - 1], k), e(k - 1, a0.shape[0]).T)
 
-    gk = np.identity(n) - t_dot_e_t
-    _l += t_dot_e_t
-    del t_dot_e_t
-
-    ak = np.dot(gk, ak_minus_1)
-
-    return _l, np.dot(gk, _u), ak
+    return _l + t_dot_e_t, np.dot(np.identity(a0.shape[0]) - t_dot_e_t, ak_minus_1)

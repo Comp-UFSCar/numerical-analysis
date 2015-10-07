@@ -1,22 +1,5 @@
 import numpy as np
-
-debugging = False
-
-
-def e(i, d):
-    """Create the i-th axis of the canonical base of the R^d.
-    """
-    _e = np.zeros((d, 1))
-    _e[i, 0] = 1
-    return _e
-
-
-def tau(x, k):
-    """Calculate tau_i^k = x_i/x_{k-1}.
-    """
-    t = x / x[k - 1]
-    t[:k] = 0
-    return t.reshape((x.shape[0], 1))
+from .base import e, tau
 
 
 def lu_decomposition(a):
@@ -44,17 +27,12 @@ def _lu_decomposition(a0, k):
 
     _l, _u, ak_minus_1 = (np.identity(n), a0, a0) if k == 1 else _lu_decomposition(a0, k - 1)
 
-    t_dot_e = np.dot(tau(ak_minus_1[:, k - 1], k), e(k - 1, n).T)
+    t_dot_e_t = np.dot(tau(ak_minus_1[:, k - 1], k), e(k - 1, n).T)
 
-    gk = np.identity(n) - t_dot_e
-    _l += t_dot_e
+    gk = np.identity(n) - t_dot_e_t
+    _l += t_dot_e_t
+    del t_dot_e_t
 
     ak = np.dot(gk, ak_minus_1)
-
-    if debugging:
-        print('G_%i:' % k)
-        print(gk)
-        print('A_%i:' % k)
-        print(ak)
 
     return _l, np.dot(gk, _u), ak

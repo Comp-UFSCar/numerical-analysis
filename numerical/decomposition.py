@@ -22,7 +22,7 @@ def lu_decomposition(a):
 
 
 def _lu_decomposition(a0, k):
-    """Recursive call of :lu_decomposition method.
+    """Recursive call of :lu_decomposition function.
 
     :param a0: the matrix A (it's also the parameter :a in the :lu_decomposition).
     :param k: which level of reduction is the algorithm dealing. Resolves recursion.

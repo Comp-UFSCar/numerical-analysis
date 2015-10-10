@@ -10,21 +10,23 @@ def forward_elimination(l, y):
     :param y: the result of the linear system.
     :return: z, where z = Ux.
     """
-    z = y.copy()
+    z = y.copy().astype(float)
 
     for k in range(y.shape[0]):
         z[k] -= np.sum(z[:k] * l[k, :k])
+        z[k] /= l[k, k]
 
-    return z / np.diag(l).reshape(z.shape)
+    return z
 
 
 def backward_elimination(u, z):
-    x = z.copy()
+    x = z.copy().astype(float)
 
     for k in range(z.shape[0] - 1, -1, -1):
         x[k] -= np.sum(x[k + 1:] * u[k, k + 1:])
+        x[k] /= u[k, k]
 
-    return x / np.diag(u).reshape(x.shape)
+    return x
 
 
 class LinearSolver:

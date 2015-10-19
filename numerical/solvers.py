@@ -7,8 +7,8 @@ def forward_elimination(l, y):
     """Perform forward elimination over a Lz = y linear system.
 
     :param l: a lower triangular matrix retrieved from a method such as LU Decomposition.
-    :param y: the result of the linear system.
-    :return: z, where z = Ux.
+    :param y: the response column-vector of the linear system.
+    :return: z, where y = Lz.
     """
     z = y.copy().astype(float)
 
@@ -20,6 +20,12 @@ def forward_elimination(l, y):
 
 
 def backward_elimination(u, z):
+    """Perform backward elimination over a Ux = z linear system.
+
+    :param u: a upper triangular matrix retrieved from a method such as LU Decomposition.
+    :param z: the response column-vector of the linear system.
+    :return: x, where z = Ux.
+    """
     x = z.copy().astype(float)
 
     for k in range(z.shape[0] - 1, -1, -1):

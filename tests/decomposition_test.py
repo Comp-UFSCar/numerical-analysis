@@ -1,6 +1,9 @@
-import numpy as np
 from unittest import TestCase
-from numerical.decomposition import lu_decomposition
+
+import numpy as np
+from numpy.testing import assert_array_almost_equal
+
+from numerical.decomposition import lu_decomposition, qr_decomposition
 
 
 class LUDecompositionTest(TestCase):
@@ -33,3 +36,20 @@ class LUDecompositionTest(TestCase):
 
         # Assert that L.U = A.
         np.array_equal(np.dot(l, u), a)
+
+
+class QRDecompositionTest(TestCase):
+    def test_raise_value_error(self):
+        a = (100 * np.random.rand(2, 4)).astype(int)
+
+        with self.assertRaises(ValueError):
+            qr_decomposition(a)
+
+    def test_decompose_zarowsky_example_4_6(self):
+        a = np.array([4, 3, 0]).reshape((3, 1))
+        expected_h1 = np.array([-5, 0, 0]).reshape((3, 1))
+
+        q, r = qr_decomposition(a)
+
+        assert_array_almost_equal(expected_h1, r)
+        assert_array_almost_equal(np.dot(q, r), a)

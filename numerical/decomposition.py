@@ -27,3 +27,29 @@ def _lu_decomposition(a0, k):
     tau_matrix = np.dot(tau(ak_minus_1[:, k - 1], k), e(k - 1, a0.shape[0]).T)
 
     return _l + tau_matrix, np.dot(np.identity(a0.shape[0]) - tau_matrix, ak_minus_1)
+
+
+def qr_decomposition(a):
+    if a.shape[0] < a.shape[1]:
+        raise ValueError('A e R^[%i, %i] is not QR decomposable.' % a.shape)
+
+    return _qr_decomposition(a, a.shape[1])
+
+
+def _qr_decomposition(a0, k):
+    if k == 1:
+        ak_minus_1 = a0
+        _q = np.identity(a0.shape[0])
+    else:
+        _q, ak_minus_1 = _qr_decomposition(a0, k - 1)
+
+    x = ak_minus_1[:, k - 1].reshape((a0.shape[0], 1))
+    x[:k - 1] = 0
+
+    y = x + np.sign(x[0]) * np.linalg.norm(x) * e(k - 1, a0.shape[0])
+
+    inner = 2 / np.dot(y.T, y)
+    outer = np.dot(y, y.T)
+    h = np.identity(a0.shape[0]) - inner * outer
+
+    return np.dot(_q, h.T), np.dot(h, ak_minus_1)

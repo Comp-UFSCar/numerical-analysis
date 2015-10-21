@@ -1,4 +1,5 @@
 from unittest import TestCase
+from nose_parameterized import parameterized
 
 import numpy as np
 from numpy.testing import assert_array_almost_equal
@@ -53,3 +54,18 @@ class QRDecompositionTest(TestCase):
 
         assert_array_almost_equal(expected_h1, r)
         assert_array_almost_equal(np.dot(q, r), a)
+
+    @parameterized.expand([
+        ([[1, 2],
+          [0, 4]],),
+        ([[1, 2, 10],
+          [2, 0, 4],
+          [10, 4, 10]],)
+    ])
+    def test_matching_matrices(self, a):
+        a = np.array(a).astype(float)
+
+        q, r = qr_decomposition(a)
+        actual = np.dot(q, r)
+
+        assert_array_almost_equal(actual, a)

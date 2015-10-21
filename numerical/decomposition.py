@@ -37,19 +37,12 @@ def qr_decomposition(a):
 
 
 def _qr_decomposition(a0, k):
-    if k == 1:
-        ak_minus_1 = a0
-        _q = np.identity(a0.shape[0])
-    else:
-        _q, ak_minus_1 = _qr_decomposition(a0, k - 1)
-
-    x = ak_minus_1[:, k - 1].reshape((a0.shape[0], 1))
-    x[:k - 1] = 0
+    _q, ak_minus_1 = (np.identity(a0.shape[0]), a0) if k == 1 else _qr_decomposition(a0, k - 1)
+    x = ak_minus_1[:, k - 1]
+    x = x.reshape((a0.shape[0], 1))
 
     y = x + np.sign(x[0]) * np.linalg.norm(x) * e(k - 1, a0.shape[0])
-
-    inner = 2 / np.dot(y.T, y)
-    outer = np.dot(y, y.T)
-    h = np.identity(a0.shape[0]) - inner * outer
+    h = np.identity(a0.shape[0]) - (2 / np.dot(y.T, y)) * np.dot(y, y.T)
+    del x, y
 
     return np.dot(_q, h.T), np.dot(h, ak_minus_1)

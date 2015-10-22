@@ -58,6 +58,9 @@ class QRDecompositionTest(TestCase):
     @parameterized.expand([
         ([[1, 2],
           [0, 4]],),
+        ([[1, 0, 0],
+          [0, 1, 0],
+          [0, 0, 1]],),
         ([[1, 2, 10],
           [2, 0, 4],
           [10, 4, 10]],),
@@ -65,22 +68,29 @@ class QRDecompositionTest(TestCase):
           [1, 2, 3],
           [0, 1, 2]],)
     ])
-    def test_matching_matrices(self, a):
+    def test_defined_matrices(self, a):
         a = np.array(a).astype(float)
 
         q, r = qr_decomposition(a)
-        actual = np.dot(q, r)
 
-        assert_array_almost_equal(actual, a, decimal=14)
+        # Assert Q is orthogonal.
+        assert_array_almost_equal(np.dot(q, q.T), np.identity(q.shape[0]), err_msg='Q is not orthogonal')
+
+        # Assert A = QR
+        actual = np.dot(q, r)
+        assert_array_almost_equal(a, actual, decimal=14)
 
     def test_random_matrices(self):
         for _ in range(100):
             n = np.random.randint(1, 100)
             m = np.random.randint(n, 100)
-
             a = 100 * np.random.rand(m, n)
 
             q, r = qr_decomposition(a)
-            actual = np.dot(q, r)
 
-            assert_array_almost_equal(actual, a)
+            # Assert Q is orthogonal.
+            assert_array_almost_equal(np.dot(q, q.T), np.identity(q.shape[0]), err_msg='Q is not orthogonal')
+
+            # Assert A = QR
+            actual = np.dot(q, r)
+            assert_array_almost_equal(a, actual, decimal=11)

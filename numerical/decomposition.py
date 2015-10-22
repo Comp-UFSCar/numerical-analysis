@@ -10,8 +10,8 @@ def lu_decomposition(a):
     :param a the matrix that should be decomposed into L and U.
 
     :return
-        L: decomposed lower triangular matrix, such that L.U = A.
-        U: decomposed upper triangular matrix, such that L.U = A.
+        L: decomposed lower triangular matrix | L.U = A.
+        U: decomposed upper triangular matrix | L.U = A.
     """
     return _lu_decomposition(a, a.shape[0] - 1)
 
@@ -30,6 +30,16 @@ def _lu_decomposition(a0, k):
 
 
 def qr_decomposition(a):
+    """Calculate matrices Q and R from a given matrix A (:a).
+
+    This function will raise a ValueError if matrix A isn't QR decomposable.
+
+    :param a the matrix that should be decomposed into Q and R.
+
+    :return
+        Q: decomposed orthogonal matrix | Q.Q^T = I.
+        R: decomposed upper triangular matrix | QR = A.
+    """
     if a.shape[0] < a.shape[1]:
         raise ValueError('A e R^[%i, %i] is not QR decomposable.' % a.shape)
 
@@ -37,6 +47,12 @@ def qr_decomposition(a):
 
 
 def _qr_decomposition(a0, k):
+    """Recursive call of :qr_decomposition function.
+
+    :param a0: the matrix A (it's also the parameter :a in the :qr_decomposition).
+    :param k: which level of reduction is the algorithm dealing. Resolves recursion.
+    :return: Q and R matrix.
+    """
     _q, ak_minus_1 = (np.identity(a0.shape[0]), a0) if k == 1 else _qr_decomposition(a0, k - 1)
     x = ak_minus_1[:, k - 1].reshape((a0.shape[0], 1))
     y = x + np.sign(x[k - 1]) * np.linalg.norm(x) * e(k - 1, a0.shape[0])

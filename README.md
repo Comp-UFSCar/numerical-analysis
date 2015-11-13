@@ -1,3 +1,3 @@
 # Numerical Analysis
 
-Algorithms studied in the Numerical Analysis class UFSCar, 2015.
+Numerical Analysis class at UFSCar.

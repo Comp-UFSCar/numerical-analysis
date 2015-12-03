@@ -21,3 +21,11 @@ def tau(x, k):
     t = x / x[k - 1]
     t[:k] = 0
     return t.reshape((x.shape[0], 1))
+
+
+def condition(a):
+    """Calculate the condition of the matrix.
+
+    :param a: a numpy matrix.
+    """
+    return np.norm(a)*np.norm(np.linalg.inv(a))

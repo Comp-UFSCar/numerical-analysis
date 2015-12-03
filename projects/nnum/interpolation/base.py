@@ -9,9 +9,13 @@ class Interpolation(metaclass=abc.ABCMeta):
             degree of the interpolation performed must be smaller than number of samples X fitted.
         """
         self.degree = degree
+        self.X = self.y = None
 
-    def fit(self, X):
+    def fit(self, X, y):
         self.X = X
+        self.y = y
+
+        return self
 
     def predict(self, t):
         raise NotImplementedError

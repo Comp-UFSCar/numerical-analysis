@@ -1,11 +1,10 @@
 from unittest import TestCase
 
-from nose_parameterized import parameterized
-
 import numpy as np
+from nose_parameterized import parameterized
 from numpy.testing import assert_array_almost_equal
 
-from numerical import solvers
+from .. import solvers
 
 
 class LinearSolverTest(TestCase):

@@ -4,7 +4,7 @@ from nose_parameterized import parameterized
 import numpy as np
 from numpy.testing import assert_array_almost_equal
 
-from numerical.decomposition import lu_decomposition, qr_decomposition
+from ..decomposition import lu_decomposition, qr_decomposition
 
 
 class LUDecompositionTest(TestCase):

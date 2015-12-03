@@ -1,11 +1,11 @@
 import numpy as np
 from unittest import TestCase
-from numerical import base
+from ..base import e, tau
 
 
 class EFunctionTest(TestCase):
     def test_create_any_canonical_vector(self):
-        actual = base.e(3, 10)
+        actual = e(3, 10)
 
         self.assertEqual(actual.shape, (10, 1))
         self.assertEqual(actual[3], 1)
@@ -17,7 +17,7 @@ class TauFunctionTest(TestCase):
         expected = [0, 0, 0, 0]
 
         for i in range(0, 4):
-            actual = base.tau(identity[i, :], i + 1)
+            actual = tau(identity[i, :], i + 1)
             np.array_equal(expected, actual)
 
     def test_random_array(self):

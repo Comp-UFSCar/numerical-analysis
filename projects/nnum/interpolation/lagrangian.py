@@ -32,7 +32,7 @@ class LagrangianInterpolation(base.Interpolation):
 
         self.__fitting_profile = value
 
-    def l(self, i, t):
+    def l(self, i, t, indices):
         """Calculate the discreet Dirac Delta.
 
         :param i:
@@ -46,7 +46,7 @@ class LagrangianInterpolation(base.Interpolation):
         """
         l = 1
 
-        for j in range(0, self.degree):
+        for j in indices:
             if i == j:
                 continue
 
@@ -72,7 +72,9 @@ class LagrangianInterpolation(base.Interpolation):
             indices = [i * self.X.shape[0] // self.degree + self.X.shape[0]
                        // (2 * self.degree) for i in range(self.degree)]
 
-            indices = [v - self.X.shape[0] // (2 * self.degree) for i, v in enumerate(indices[:len(indices) // 2])] \
+            # Shift points so the extremes of the interval are included.
+            indices = [v - self.X.shape[0] // (2 * self.degree) for i, v in
+                       enumerate(indices[:len(indices) // 2 + 1])] \
                       + [v + (self.X.shape[0] - 1) // (2 * self.degree) for i, v in
                          enumerate(indices[len(indices) // 2:])]
 
@@ -82,6 +84,6 @@ class LagrangianInterpolation(base.Interpolation):
 
         pred = 0
         for i in indices:
-            pred += self.y[i] * self.l(i, t)
+            pred += self.y[i] * self.l(i, t, indices)
 
         return pred

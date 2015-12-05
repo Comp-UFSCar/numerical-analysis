@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from projects.nnum.interpolation.lagrangian import LagrangianInterpolation
 
-interpolation_degree = 20
+interpolation_degree = 1
 n_samples = 20
 n_predictions = 100
 n_interval = 19
@@ -20,7 +20,7 @@ def main():
     X_test = np.random.rand(n_predictions, 1) * n_interval
 
     i = LagrangianInterpolation(interpolation_degree,
-                                fitting_profile='sparse').fit(X_train, y_train)
+                                fitting_profile='local').fit(X_train, y_train)
 
     y_pred = np.array([i.predict(t) for t in X_test])
     print(y_pred)

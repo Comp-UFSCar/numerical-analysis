@@ -1,39 +1,37 @@
-import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.tests.test_style import temp_style
-from mpl_toolkits.mplot3d import Axes3D
-
-Axes3D
-
+import numpy as np
 from projects.nnum.interpolation.lagrangian import LagrangianInterpolation
 
-interpolation_degree = 3
-n_samples = 10
+interpolation_degree = 20
+n_samples = 20
 n_predictions = 100
+n_interval = 19
 
 
 def main():
     print('Random Interpolation Example')
 
-    X = np.zeros((n_samples, 1))
+    X_train = np.zeros((n_samples, 1))
     for i in range(n_samples):
-        X[i, 0] = i
+        X_train[i, 0] = i
 
-    y = np.random.rand(n_samples) * 100
+    y_train = np.array([i ** 2 for i in range(n_samples)])
+    # y_train = np.random.rand(n_samples) * 100
+    X_test = np.random.rand(n_predictions, 1) * n_interval
 
-    i = LagrangianInterpolation(interpolation_degree).fit(X, y)
-    tst_data = np.random.rand(n_predictions, 1)
-    y_predicted = np.array([i.predict(t) for t in tst_data])
+    i = LagrangianInterpolation(interpolation_degree,
+                                fitting_profile='sparse').fit(X_train, y_train)
 
-    print(y_predicted)
+    y_pred = np.array([i.predict(t) for t in X_test])
+    print(y_pred)
 
     figure = plt.figure(figsize=(16, 9))
-
-    plt.scatter(X.flatten(), y, color='red')
-    plt.scatter(tst_data.flatten(), y_predicted, color='orange')
+    plt.scatter(X_train.flatten(), y_train, color='red')
+    plt.scatter(X_test.flatten(), y_pred, color='orange')
     plt.axis('tight')
-
     plt.show()
+
+    print('Done.')
 
 
 if __name__ == '__main__':

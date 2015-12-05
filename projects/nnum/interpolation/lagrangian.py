@@ -1,9 +1,37 @@
 import numpy as np
-
+from math import ceil
 from . import base
 
 
 class LagrangianInterpolation(base.Interpolation):
+    def __init__(self, degree, fitting_profile='local'):
+        """Lagrangian Interpolation.
+
+        :param degree: int
+            The degree of the polynomial form.
+
+        :param fitting_profile: str (default='local')
+            The fitting profile of the interpolation.
+
+            If 'local', will interpolate using the closest points to t.
+            If 'sparse', will use the most sparse collection of points possible.
+
+        """
+        super().__init__(degree)
+
+        self.fitting_profile = fitting_profile
+
+    @property
+    def fitting_profile(self):
+        return self.__fitting_profile
+
+    @fitting_profile.setter
+    def fitting_profile(self, value):
+        if value not in ('local', 'sparse'):
+            raise ValueError('Cannot set fitting_profile property to %s' % str(value))
+
+        self.__fitting_profile = value
+
     def l(self, i, t):
         """Calculate the discreet Dirac Delta.
 
@@ -18,13 +46,13 @@ class LagrangianInterpolation(base.Interpolation):
         """
         l = 1
 
-        for j in range(0, i):
-            l *= (t - self.X[j]) / (self.X[i] - self.X[j])
+        for j in range(0, self.degree):
+            if i == j:
+                continue
 
-        for j in range(i + 1, self.degree):
-            l *= (t - self.X[j]) / (self.X[i] - self.X[j])
+            l *= ((t - self.X[j]) / (self.X[i] - self.X[j]))[0]
 
-        return l[0]
+        return l
 
     def predict(self, t):
         """Interpolate the function f described by the data X to predict f(t).
@@ -35,17 +63,25 @@ class LagrangianInterpolation(base.Interpolation):
         :return:
             :float: the interpolated value for f(t).
         """
-        # Find closest :degree points to t.
-        indices = np.argsort(self.X - t)[:self.degree]
+        if self.fitting_profile == 'local':
+            # Select the "degree+1" closest points to t.
+            indices = np.argsort(np.abs(self.X - t), axis=0)[:self.degree + 1]
+
+        elif self.fitting_profile == 'sparse':
+            # Select the "degree+1" most sparse points.
+            indices = [i * self.X.shape[0] // self.degree + self.X.shape[0]
+                       // (2 * self.degree) for i in range(self.degree)]
+
+            indices = [v - self.X.shape[0] // (2 * self.degree) for i, v in enumerate(indices[:len(indices) // 2])] \
+                      + [v + (self.X.shape[0] - 1) // (2 * self.degree) for i, v in
+                         enumerate(indices[len(indices) // 2:])]
 
         # The points found are ordered by distance to :t (e.g., 5, 1, 0, 3).
         # Reorder them by their indices (e.g.: 0, 1, 3, 5).
-        indices = np.sort(indices)
-        y = self.y[indices]
+        indices = np.sort(indices).flatten()
 
         pred = 0
-        for i in range(self.degree):
-            l = self.l(i, t)
-            pred += y[i, 0] * l
+        for i in indices:
+            pred += self.y[i] * self.l(i, t)
 
         return pred

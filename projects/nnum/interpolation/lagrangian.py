@@ -3,9 +3,9 @@ from math import ceil
 from . import base
 
 
-class LagrangianInterpolation(base.Interpolation):
+class LagrangianInterpolator(base.Interpolator):
     def __init__(self, degree, fitting_profile='local'):
-        """Lagrangian Interpolation.
+        """Lagrangian Integrator.
 
         :param degree: int
             The degree of the polynomial form.

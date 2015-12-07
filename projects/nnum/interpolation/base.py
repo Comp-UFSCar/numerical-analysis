@@ -1,21 +1,20 @@
 import abc
+from ..base import Predictor
 
 
-class Interpolation(metaclass=abc.ABCMeta):
-    def __init__(self, degree):
-        """Base Interpolation class.
+class Interpolator(Predictor, metaclass=abc.ABCMeta):
+    """Base Interpolator class.
 
-        :type degree: int
-            degree of the interpolation performed must be smaller than number of samples X fitted.
-        """
+    Interpolates a function based on the points expressed
+    by X and y.
+
+    :type degree, int
+        Degree of the interpolation performed must
+        be smaller than number of samples X fitted.
+    """
+
+    def __init__(self, degree: int):
+        super().__init__()
+
         self.degree = degree
         self.X = self.y = None
-
-    def fit(self, X, y):
-        self.X = X
-        self.y = y
-
-        return self
-
-    def predict(self, t):
-        raise NotImplementedError

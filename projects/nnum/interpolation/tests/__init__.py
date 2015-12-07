@@ -13,7 +13,7 @@ class LagrangianTest(TestCase):
             [2, 3],
         ])
 
-        i = lagrangian.LagrangianInterpolation(2)
+        i = lagrangian.LagrangianInterpolator(2)
         i.fit(X)
 
         actual = i.predict(.5)

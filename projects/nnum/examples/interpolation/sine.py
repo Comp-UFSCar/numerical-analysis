@@ -1,26 +1,25 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from projects.nnum.interpolation.lagrangian import LagrangianInterpolation
+from projects.nnum.interpolation.lagrangian import LagrangianInterpolator
 
-interpolation_degree = 1
+interpolation_degree = 2
 n_samples = 20
-n_predictions = 100
+n_predictions = 1000
 n_interval = 19
 
 
 def main():
-    print('Random Interpolation Example')
+    print('Interpolating the Sine Function')
 
     X_train = np.zeros((n_samples, 1))
     for i in range(n_samples):
         X_train[i, 0] = i
 
-    y_train = np.array([i ** 2 for i in range(n_samples)])
-    # y_train = np.random.rand(n_samples) * 100
+    y_train = np.array([np.sin(np.pi / 4 * i) for i in range(n_samples)])
     X_test = np.random.rand(n_predictions, 1) * n_interval
 
-    i = LagrangianInterpolation(interpolation_degree,
-                                fitting_profile='local').fit(X_train, y_train)
+    i = LagrangianInterpolator(interpolation_degree,
+                               fitting_profile='local').fit(X_train, y_train)
 
     y_pred = np.array([i.predict(t) for t in X_test])
     print(y_pred)

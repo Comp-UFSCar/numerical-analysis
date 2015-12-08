@@ -1,5 +1,4 @@
 import abc
-from ..base import Fitter
 
 
 class Integrator(metaclass=abc.ABCMeta):

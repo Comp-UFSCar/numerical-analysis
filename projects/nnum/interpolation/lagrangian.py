@@ -67,8 +67,8 @@ class LagrangianInterpolator(base.Interpolator):
             # Select the "degree+1" closest points to t.
             indices = np.argsort(np.abs(self.X - t), axis=0)[:self.degree + 1]
 
-        elif self.fitting_profile == 'sparse':
-            # Select the "degree+1" most sparse points.
+        else:
+            # Select the "degree + 1" most sparse points.
             indices = [i * self.X.shape[0] // self.degree + self.X.shape[0]
                        // (2 * self.degree) for i in range(self.degree)]
 
@@ -81,9 +81,4 @@ class LagrangianInterpolator(base.Interpolator):
         # The points found are ordered by distance to :t (e.g., 5, 1, 0, 3).
         # Reorder them by their indices (e.g.: 0, 1, 3, 5).
         indices = np.sort(indices).flatten()
-
-        pred = 0
-        for i in indices:
-            pred += self.y[i] * self.l(i, t, indices)
-
-        return pred
+        return sum((self.y[i] * self.l(i, t, indices) for i in indices))

@@ -1,9 +1,7 @@
 from unittest import TestCase
 from nose_parameterized import parameterized
-
 import numpy as np
 from numpy.testing import assert_array_almost_equal
-
 from ..decomposition import lu_decomposition, qr_decomposition
 
 
@@ -36,6 +34,17 @@ class LUDecompositionTest(TestCase):
         l, u = lu_decomposition(a)
 
         # Assert that L.U = A.
+        np.array_equal(np.dot(l, u), a)
+
+    def test_exam_2_question_5(self):
+        a = np.array([
+            [2, -1, 0],
+            [-1, .5, -1],
+            [0, 1, 2],
+        ])
+
+        l, u = lu_decomposition(a)
+
         np.array_equal(np.dot(l, u), a)
 
 
@@ -74,7 +83,8 @@ class QRDecompositionTest(TestCase):
         q, r = qr_decomposition(a)
 
         # Assert Q is orthogonal.
-        assert_array_almost_equal(np.dot(q, q.T), np.identity(q.shape[0]), err_msg='Q is not orthogonal')
+        assert_array_almost_equal(np.dot(q, q.T), np.identity(q.shape[0]),
+                                  err_msg='Q is not orthogonal')
 
         # Assert A = QR
         actual = np.dot(q, r)
@@ -89,7 +99,8 @@ class QRDecompositionTest(TestCase):
             q, r = qr_decomposition(a)
 
             # Assert Q is orthogonal.
-            assert_array_almost_equal(np.dot(q, q.T), np.identity(q.shape[0]), err_msg='Q is not orthogonal')
+            assert_array_almost_equal(np.dot(q, q.T), np.identity(q.shape[0]),
+                                      err_msg='Q is not orthogonal')
 
             # Assert A = QR
             actual = np.dot(q, r)

@@ -28,6 +28,6 @@ class TauFunctionTest(TestCase):
         expected = sample / xk_1
         expected[:k] = 0
 
-        actual = base.tau(sample, k)
+        actual = tau(sample, k)
 
         np.array_equal(expected, actual)

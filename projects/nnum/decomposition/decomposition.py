@@ -23,10 +23,13 @@ def _lu_decomposition(a0, k):
     :param k: which level of reduction is the algorithm dealing. Resolves recursion.
     :return: L, U and the Ak matrix.
     """
-    _l, ak_minus_1 = (np.identity(a0.shape[0]), a0) if k == 1 else _lu_decomposition(a0, k - 1)
-    tau_matrix = np.dot(tau(ak_minus_1[:, k - 1], k), e(k - 1, a0.shape[0]).T)
+    _l, ak_minus_1 = (np.identity(a0.shape[0]), a0) \
+        if k == 1 \
+        else _lu_decomposition(a0, k - 1)
 
-    return _l + tau_matrix, np.dot(np.identity(a0.shape[0]) - tau_matrix, ak_minus_1)
+    tau_matrix = np.dot(tau(ak_minus_1[:, k - 1], k), e(k - 1, a0.shape[0]).T)
+    return _l + tau_matrix, np.dot(np.identity(a0.shape[0]) - tau_matrix,
+                                   ak_minus_1)
 
 
 def qr_decomposition(a):
@@ -53,7 +56,9 @@ def _qr_decomposition(a0, k):
     :param k: which level of reduction is the algorithm dealing. Resolves recursion.
     :return: Q and R matrix.
     """
-    _q, ak_minus_1 = (np.identity(a0.shape[0]), a0) if k == 1 else _qr_decomposition(a0, k - 1)
+    _q, ak_minus_1 = (
+        np.identity(a0.shape[0]), a0) if k == 1 else _qr_decomposition(a0,
+                                                                       k - 1)
     x = ak_minus_1[:, k - 1].reshape((a0.shape[0], 1))
     y = x + np.sign(x[k - 1]) * np.linalg.norm(x) * e(k - 1, a0.shape[0])
     h = np.identity(a0.shape[0]) - 2 * np.dot(y, y.T) / np.dot(y.T, y)

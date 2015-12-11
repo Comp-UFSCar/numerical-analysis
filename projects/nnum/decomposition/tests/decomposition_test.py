@@ -43,9 +43,9 @@ class LUDecompositionTest(TestCase):
             [0, 1, 2],
         ])
 
-        l, u = lu_decomposition(a)
-
-        np.array_equal(np.dot(l, u), a)
+        with self.assertRaises(ValueError):
+            # Assert this is not LU decomposable.
+            l, u = lu_decomposition(a)
 
 
 class QRDecompositionTest(TestCase):
